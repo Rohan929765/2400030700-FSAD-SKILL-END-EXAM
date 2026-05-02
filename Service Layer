@@ -1,0 +1,38 @@
+package com.klef.fsad.exam.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.klef.fsad.exam.model.Shipment;
+import com.klef.fsad.exam.repository.ShipmentRepository;
+
+@Service
+public class ShipmentService 
+{
+    @Autowired
+    private ShipmentRepository shipmentRepository;
+
+    // Add Shipment (POST)
+    public Shipment addShipment(Shipment shipment) 
+    {
+        if (shipment.getShipmentId() == null) 
+        {
+            throw new RuntimeException("Shipment ID must be provided manually");
+        }
+        return shipmentRepository.save(shipment);
+    }
+
+    // Update Shipment (PUT)
+    public Shipment updateShipment(Long id, Shipment shipment) 
+    {
+        Shipment existing = shipmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Shipment not found"));
+
+        existing.setName(shipment.getName());
+        existing.setShipmentDate(shipment.getShipmentDate());
+        existing.setStatus(shipment.getStatus());
+        existing.setOrigin(shipment.getOrigin());
+        existing.setDestination(shipment.getDestination());
+
+        return shipmentRepository.save(existing);
+    }
+}
